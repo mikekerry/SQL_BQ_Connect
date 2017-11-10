@@ -1,4 +1,5 @@
 from google.cloud import bigquery
+import pandas as pd
 
 def explicit():
     # Explicitly use service account credentials by specifying the private key
@@ -19,5 +20,15 @@ def explicit():
 
     for row in results:
         print(row)
+
+    print('-----1-----')
+
+    query = "SELECT count(*) FROM `data-engineering-156814.custom_mis.core_account_onboarding_journey`"
+
+    df = pd.read_gbq(query, project_id='data-engineering-156814', private_key='deng_non_prod.json', dialect='standard')
+
+    print('-----2-----')
+
+    df.info()
 
 explicit()
