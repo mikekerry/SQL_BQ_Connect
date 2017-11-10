@@ -20,5 +20,25 @@ df_bq = pd.read_gbq(query, project_id='data-engineering-156814', private_key='de
 
 #df_sql.to_csv('df_bq.csv')
 
-print(df_sql.head())
-print(df_bq.head())
+#print(df_sql.head())
+#print(df_bq.head())
+
+def pysqldf(q):
+    return sqldf(q, globals())
+
+q = """
+    SELECT
+        s.Account_Signup_ID
+        , s.Update_Audit_Key
+    FROM
+        df_sql s
+    LEFT JOIN
+        df_bq b
+            on s.Account_Signup_ID = b.Account_Signup_ID
+            and s.Update_Audit_Key = b.Update_Audit_Key
+    WHERE b.Account_Signup_ID IS NULL
+    LIMIT 100;
+    """
+
+joined = pysqldf(q)
+print(joined.head())
