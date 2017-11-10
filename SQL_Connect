@@ -1,9 +1,24 @@
 import pyodbc
+import pandas as pd
 
 connection = pyodbc.connect("Driver={SQL Server Native Client 11.0};Server=OVOSQL03DEV01\OVOSQL03DEV01;Database=db_MIS_DW;Trusted_Connection=yes;")
 
 cursor = connection.cursor()
-cursor.execute('SELECT * FROM [Audit].[tbl_Big_Query_Reconciliation]')
+cursor.execute('select count(*) FROM [db_MIS_DW].[Core].[Fact_Account_Onboarding_Journey]')
 
-for row in cursor:
-    print('row = %r' % (row,))
+count = cursor.fetchone()[0]
+
+print(count)
+
+sql = 'select top 100 * FROM [db_MIS_DW].[Core].[Fact_Account_Onboarding_Journey]'
+
+df = pd.read_sql_query(sql, connection)
+
+df.info()
+
+#df['Account_No'].value_counts()
+
+#df.head()
+
+#df.describe()
+
