@@ -1,0 +1,24 @@
+import pyodbc
+from google.cloud import bigquery
+import pandas as pd
+
+from pandasql import sqldf
+
+connection = pyodbc.connect("Driver={SQL Server Native Client 11.0};Server=OVOSQL03DEV01\OVOSQL03DEV01;Database=db_MIS_DW;Trusted_Connection=yes;")
+
+sql = 'select Account_Signup_ID, Update_Audit_Key FROM [db_MIS_DW].[Core].[Fact_Account_Onboarding_Journey]'
+
+df_sql = pd.read_sql(sql, connection)
+
+#df_sql.to_csv('df_sql.csv')
+
+bigquery_client = bigquery.Client.from_service_account_json('deng_non_prod.json')
+
+query = "SELECT Account_Signup_ID, Update_Audit_Key FROM  `data-engineering-156814.custom_mis.core_account_onboarding_journey`"
+
+df_bq = pd.read_gbq(query, project_id='data-engineering-156814', private_key='deng_non_prod.json', dialect='standard')
+
+#df_sql.to_csv('df_bq.csv')
+
+print(df_sql.head())
+print(df_bq.head())
