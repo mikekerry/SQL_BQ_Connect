@@ -1,0 +1,23 @@
+from google.cloud import bigquery
+
+def explicit():
+    # Explicitly use service account credentials by specifying the private key
+    # file. All clients in google-cloud-python have this helper, see
+    # https://google-cloud-python.readthedocs.io/en/latest/core/modules.html
+    #   #google.cloud.client.Client.from_service_account_json
+    bigquery_client = bigquery.Client.from_service_account_json('deng_non_prod.json')
+
+    # Make an authenticated API request
+    #buckets = list(bigquery_client.list_datasets())
+    #print(buckets)
+
+    query_job = bigquery_client.query("""
+            #standardSQL
+            SELECT count(*) FROM `data-engineering-156814.custom_mis.core_account_onboarding_journey`""")
+
+    results = query_job.result()  # Waits for job to complete.
+
+    for row in results:
+        print(row)
+
+explicit()
