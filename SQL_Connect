@@ -1,0 +1,9 @@
+import pyodbc
+
+connection = pyodbc.connect("Driver={SQL Server Native Client 11.0};Server=OVOSQL03DEV01\OVOSQL03DEV01;Database=db_MIS_DW;Trusted_Connection=yes;")
+
+cursor = connection.cursor()
+cursor.execute('SELECT * FROM [Audit].[tbl_Big_Query_Reconciliation]')
+
+for row in cursor:
+    print('row = %r' % (row,))
